@@ -525,59 +525,42 @@
 
             const question = document.getElementById('question').value;
             const mode = document.querySelector('.mode-option.active').dataset.mode;
-            const cardCount = document.querySelector('.card-option.active')?.dataset.count || 3;
+            const cardCount = document.querySelector('.card-option.active')?.dataset.count;
+
+            // 準備請求數據
+            const requestData = {
+                mode: mode,
+                question: question
+            };
+
+            if (mode === 'auto' && cardCount) {
+                requestData.cardCount = parseInt(cardCount);
+            }
 
             // 顯示載入動畫
             showLoading();
 
-            // 模擬 API 延遲
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
 
-            // 使用假資料
-            const mockResult = {
-                success: true,
-                result: {
-                    question: question,
-                    mode: mode,
-                    cardCount: parseInt(cardCount),
-                    drawnCards: [
-                        {
-                            drawOrder: 1,
-                            name: '愚者',
-                            orientation: '正位',
-                            position: '過去',
-                            meaning: '代表新的開始與無限可能，你曾經勇敢地踏出第一步。',
-                            isReversed: false
-                        },
-                        {
-                            drawOrder: 2,
-                            name: '戀人',
-                            orientation: '正位',
-                            position: '現在',
-                            meaning: '象徵著重要的選擇與關係，此刻你正面臨心靈的抉擇。',
-                            isReversed: false
-                        },
-                        {
-                            drawOrder: 3,
-                            name: '太陽',
-                            orientation: '正位',
-                            position: '未來',
-                            meaning: '預示著成功、喜悅與豐收，美好的未來正在等待著你。',
-                            isReversed: false
-                        }
-                    ].slice(0, parseInt(cardCount)),
-                    interpretation: `**整體解讀**\n\n從這次的牌陣來看，你的人生正處於一個充滿轉變與成長的階段。\n\n**過去**展現了你勇於嘗試的特質，那些看似冒險的決定，其實都是為現在鋪路。\n\n**現在**的你面臨重要抉擇，這個選擇將深刻影響你的未來方向。請傾聽內心真實的聲音，不要被外在因素左右。\n\n**未來**充滿光明與希望，只要你保持真誠與勇氣，美好的結果終將到來。\n\n記住：Trust yourself. 相信自己的直覺與判斷。`,
-                    timestamp: new Date().toISOString(),
-                    drawId: 'DEMO-' + Date.now(),
-                    summary: {
-                        upright: parseInt(cardCount),
-                        reversed: 0
-                    }
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResult(data.result);
+                } else {
+                    throw new Error('占卜失敗');
                 }
-            };
-
-            hideLoading();
-            displayResult(mockResult.result);
+            } catch (error) {
+                displayError('占卜過程中發生錯誤: ' + error.message);
+            } finally {
+                hideLoading();
+            }
         });
         
         function showLoading() {
