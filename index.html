@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 神秘塔羅 - 探索內心智慧</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@600&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            background-color: #FFF4EA;
+            background-image: url('Gradient.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('Texture.svg');
+            background-repeat: repeat;
+            background-size: auto;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        } */
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 標題區域 */
+        .header {
+            text-align: left;
+            margin-bottom: 60px;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #2d2d2d;
+            margin-bottom: 5px;
+            font-family: 'Abhaya Libre', serif;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #6d6d6d;
+            font-size: 1.1rem;
+            font-family: 'Abhaya Libre', serif;
+            font-weight: 600;
+        }
+
+        /* 主要內容區域 */
+        .main-content {
+            display: block;
+        }
+
+        /* 輸入區域 */
+        .input-section {
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        /* 模式選擇 */
+        .mode-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .mode-option {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #2d2d2d;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            color: #2d2d2d;
+            font-size: 1rem;
+        }
+
+        .mode-option.active {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-color: #2d2d2d;
+        }
+
+        .mode-option:hover {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            transform: translateY(-2px);
+        }
+
+        /* 抽牌數選擇 */
+        .card-count-section {
+            display: none;
+        }
+
+        .card-count-section.show {
+            display: block;
+        }
+
+        .card-count-options {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .card-option {
+            flex: 1;
+            padding: 18px;
+            border: 2px solid #2d2d2d;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: transparent;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #2d2d2d;
+        }
+
+        .card-option.active {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-color: #2d2d2d;
+        }
+
+        .card-option:hover {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        /* 問題輸入框 */
+        .form-group textarea {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            resize: vertical;
+            min-height: 150px;
+            font-family: 'Noto Serif TC', serif;
+            color: #2d2d2d;
+        }
+
+        .form-group textarea::placeholder {
+            color: #999;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 按鈕 */
+        .submit-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 15px 50px;
+            background: #FFBDCD;
+            color: #2d2d2d;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            font-family: 'Noto Serif TC', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #ffabc0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 189, 205, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .btn-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 載入動畫 - 全螢幕蓋板 */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 244, 234, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 189, 205, 0.3);
+            border-top: 4px solid #FFBDCD;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading h3 {
+            color: #2d2d2d;
+            margin-bottom: 10px;
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 600;
+        }
+
+        .loading p {
+            color: #6d6d6d;
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 結果區域 */
+        .result-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-content {
+            display: none;
+            width: 100%;
+        }
+
+        .result-content.show {
+            display: block;
+        }
+
+        /* 抽牌結果 */
+        .cards-display {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            justify-content: center;
+        }
+
+        .tarot-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+            max-width: 200px;
+            transition: all 0.3s;
+        }
+
+        .tarot-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-number {
+            background: #FFB5C5;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .card-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2d2d2d;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            font-size: 0.95rem;
+            color: #6d6d6d;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .card-meaning {
+            color: #4a4a4a;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* 解讀區域 */
+        .interpretation {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            line-height: 1.8;
+            color: #2d2d2d;
+        }
+
+        .interpretation h4 {
+            color: #2d2d2d;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        /* 詳細信息 */
+        .result-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(45, 45, 45, 0.1);
+        }
+
+        .meta-item {
+            background: rgba(255, 189, 205, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .meta-label {
+            font-size: 0.9rem;
+            color: #6d6d6d;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-weight: bold;
+            color: #2d2d2d;
+        }
+
+        /* 錯誤提示 */
+        .error {
+            background: rgba(254, 215, 215, 0.85);
+            backdrop-filter: blur(10px);
+            border: 2px solid #f56565;
+            border-radius: 12px;
+            padding: 20px;
+            color: #c53030;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 3rem;
+            }
+
+            .container {
+                padding: 30px 15px;
+            }
+
+            .mode-selection {
+                flex-direction: column;
+            }
+
+            .cards-display {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tarot-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <div class="header">
+            <h1 class="title">Tarot</h1>
+            <p class="subtitle">Trust yourself.</p>
+        </div>
+
+        <!-- 主要內容 -->
+        <div class="main-content">
+            <!-- 輸入區域 -->
+            <div class="input-section">
+                <form id="tarotForm">
+                    <div class="form-group">
+                        <div class="mode-selection">
+                            <div class="mode-option active" data-mode="auto">
+                                自選牌數
+                            </div>
+                            <div class="mode-option" data-mode="ai-suggest">
+                                AI推薦
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group card-count-section show">
+                        <div class="card-count-options">
+                            <div class="card-option active" data-count="1">1</div>
+                            <div class="card-option" data-count="2">2</div>
+                            <div class="card-option" data-count="3">3</div>
+                            <div class="card-option" data-count="4">4</div>
+                            <div class="card-option" data-count="5">5</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea id="question" rows="5" placeholder="請詳細輸入您的問題" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">送出</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 結果區域 -->
+            <div class="result-section" id="resultSection">
+                <h3 style="text-align: center; color: #2d2d2d; margin-bottom: 20px;">您的塔羅牌解讀</h3>
+                <div id="resultDetails"></div>
+            </div>
+        </div>
+        
+        <!-- 載入動畫 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>正在為您抽牌...</h3>
+            <p>宇宙正在為您準備答案，請稍候...</p>
+        </div>
+    </div>
+
+    <script>
+        // API 配置 - Zeabur 部署的 API
+        const API_URL = 'https://elly3160.zeabur.app/webhook/tarot-game';
+        
+        // 模式選擇
+        document.querySelectorAll('.mode-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.mode-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                
+                const cardCountSection = document.querySelector('.card-count-section');
+                if (this.dataset.mode === 'auto') {
+                    cardCountSection.classList.add('show');
+                } else {
+                    cardCountSection.classList.remove('show');
+                }
+            });
+        });
+        
+        // 抽牌數量選擇
+        document.querySelectorAll('.card-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.card-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // 表單提交
+        document.getElementById('tarotForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const question = document.getElementById('question').value;
+            const mode = document.querySelector('.mode-option.active').dataset.mode;
+            const cardCount = document.querySelector('.card-option.active')?.dataset.count || 3;
+
+            // 顯示載入動畫
+            showLoading();
+
+            // 模擬 API 延遲
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // 使用假資料
+            const mockResult = {
+                success: true,
+                result: {
+                    question: question,
+                    mode: mode,
+                    cardCount: parseInt(cardCount),
+                    drawnCards: [
+                        {
+                            drawOrder: 1,
+                            name: '愚者',
+                            orientation: '正位',
+                            position: '過去',
+                            meaning: '代表新的開始與無限可能，你曾經勇敢地踏出第一步。',
+                            isReversed: false
+                        },
+                        {
+                            drawOrder: 2,
+                            name: '戀人',
+                            orientation: '正位',
+                            position: '現在',
+                            meaning: '象徵著重要的選擇與關係，此刻你正面臨心靈的抉擇。',
+                            isReversed: false
+                        },
+                        {
+                            drawOrder: 3,
+                            name: '太陽',
+                            orientation: '正位',
+                            position: '未來',
+                            meaning: '預示著成功、喜悅與豐收，美好的未來正在等待著你。',
+                            isReversed: false
+                        }
+                    ].slice(0, parseInt(cardCount)),
+                    interpretation: `**整體解讀**\n\n從這次的牌陣來看，你的人生正處於一個充滿轉變與成長的階段。\n\n**過去**展現了你勇於嘗試的特質，那些看似冒險的決定，其實都是為現在鋪路。\n\n**現在**的你面臨重要抉擇，這個選擇將深刻影響你的未來方向。請傾聽內心真實的聲音，不要被外在因素左右。\n\n**未來**充滿光明與希望，只要你保持真誠與勇氣，美好的結果終將到來。\n\n記住：Trust yourself. 相信自己的直覺與判斷。`,
+                    timestamp: new Date().toISOString(),
+                    drawId: 'DEMO-' + Date.now(),
+                    summary: {
+                        upright: parseInt(cardCount),
+                        reversed: 0
+                    }
+                }
+            };
+
+            hideLoading();
+            displayResult(mockResult.result);
+        });
+        
+        function showLoading() {
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('resultSection').classList.remove('show');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('show');
+        }
+        
+        function displayResult(result) {
+            const resultSection = document.getElementById('resultSection');
+            const resultDetails = document.getElementById('resultDetails');
+            
+            let cardsHtml = '';
+            result.drawnCards.forEach((card, index) => {
+                const orientationClass = card.isReversed ? 'reversed' : 'upright';
+                cardsHtml += `
+                    <div class="tarot-card ${orientationClass}">
+                        <div class="card-number">${card.drawOrder}</div>
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-meta">${card.orientation}｜${card.position}</div>
+                        <div class="card-meaning">${card.meaning}</div>
+                    </div>
+                `;
+            });
+            
+            // 處理 AI 解讀文本，將其分段顯示
+            const interpretation = result.interpretation || '暫無解讀內容';
+            const formattedInterpretation = interpretation.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            resultDetails.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <strong style="color: #2d3748;">問題:</strong> ${result.question}<br>
+                    <strong style="color: #2d3748;">模式:</strong> ${result.mode === 'auto' ? '自選抽牌' : 'AI智能建議'}<br>
+                    <strong style="color: #2d3748;">抽牌數:</strong> ${result.cardCount}張
+                </div>
+                
+                <div class="cards-display">
+                    ${cardsHtml}
+                </div>
+                
+                <div class="interpretation">
+                    <h4>🔮 塔羅牌解讀</h4>
+                    <div>${formattedInterpretation}</div>
+                </div>
+                
+                <div class="result-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">占卜時間</div>
+                        <div class="meta-value">${new Date(result.timestamp).toLocaleString('zh-TW')}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">記錄編號</div>
+                        <div class="meta-value">${result.drawId}</div>
+                    </div>
+                    ${result.summary ? `
+                    <div class="meta-item">
+                        <div class="meta-label">牌面分布</div>
+                        <div class="meta-value">正位 ${result.summary.upright}張 / 逆位 ${result.summary.reversed}張</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // 顯示結果
+            resultSection.classList.add('show');
+        }
+        
+        function displayError(message) {
+            const resultSection = document.getElementById('resultSection');
+            const resultDetails = document.getElementById('resultDetails');
+
+            resultDetails.innerHTML = `
+                <div class="error">
+                    <h3>❌ 占卜失敗</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 10px;">請檢查網路連接後重試，或稍後再試。</p>
+                </div>
+            `;
+
+            resultSection.classList.add('show');
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 頁面載入完成
+        });
+    </script>
+</body>
+</html>
