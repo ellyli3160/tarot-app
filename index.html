@@ -500,27 +500,158 @@
             margin: 20px 0;
         }
 
+        /* 按鈕容器 */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons .submit-btn {
+            flex: 0 1 auto;
+            margin: 0;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0 !important;
+            color: #2d2d2d !important;
+        }
+
         /* 響應式設計 */
         @media (max-width: 768px) {
             .title {
-                font-size: 3rem;
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
             }
 
             .container {
-                padding: 30px 15px;
+                padding: 20px 15px;
+            }
+
+            .header {
+                margin-bottom: 40px;
             }
 
             .mode-selection {
                 flex-direction: column;
+                gap: 10px;
+            }
+
+            .mode-option {
+                padding: 12px 15px;
+                font-size: 0.95rem;
+            }
+
+            .card-count-options {
+                gap: 8px;
+            }
+
+            .card-option {
+                padding: 12px;
+                font-size: 1rem;
+            }
+
+            .form-group textarea {
+                padding: 15px;
+                font-size: 16px;
+                min-height: 120px;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .result-section {
+                padding: 20px 15px;
             }
 
             .cards-display {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 12px;
             }
 
             .tarot-card {
                 max-width: 100%;
+                padding: 20px 15px;
+            }
+
+            .card-name {
+                font-size: 1.2rem;
+            }
+
+            .interpretation {
+                padding: 20px 15px;
+            }
+
+            .interpretation h1 { font-size: 1.5rem; }
+            .interpretation h2 { font-size: 1.3rem; }
+            .interpretation h3 { font-size: 1.1rem; }
+            .interpretation h4 { font-size: 1rem; }
+
+            .result-meta {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .meta-item {
+                padding: 12px;
+            }
+
+            .meta-label {
+                font-size: 0.85rem;
+            }
+
+            .meta-value {
+                font-size: 0.9rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-buttons .submit-btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .container {
+                padding: 15px 10px;
+            }
+
+            .card-count-options {
+                gap: 6px;
+            }
+
+            .card-option {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .submit-btn {
+                padding: 10px 25px;
+                font-size: 0.95rem;
+            }
+
+            .interpretation {
+                padding: 15px 10px;
             }
         }
     </style>
@@ -571,7 +702,6 @@
 
             <!-- 結果區域 -->
             <div class="result-section" id="resultSection">
-                <h3 style="text-align: center; color: #2d2d2d; margin-bottom: 20px;">您的塔羅牌解讀</h3>
                 <div id="resultDetails"></div>
             </div>
         </div>
@@ -600,6 +730,7 @@
             return {
                 sessionId: generateUUID(),
                 createdAt: new Date().toISOString(),
+                initialQuestion: '',  // 第一次占卜的問題
                 currentQuestion: '',
                 drawnCardNames: [],
                 drawnCards: [],
@@ -704,6 +835,11 @@
                         return card.name.replace(/[（(](正位|逆位)[）)]/g, '').trim();
                     });
 
+                    // 如果是第一次占卜，保存初始問題
+                    if (!session.initialQuestion) {
+                        session.initialQuestion = question;
+                    }
+
                     session.currentQuestion = question;
                     session.drawnCards = data.result.drawnCards;
                     session.drawnCardNames.push(...newCardNames);
@@ -711,6 +847,10 @@
                     session.totalDrawn += data.result.cardCount;
 
                     saveSession(session);
+                    // 確保 question 欄位存在（防止 API 未返回）
+                    if (!data.result.question) {
+                        data.result.question = question;
+                    }
                     displayResult(data.result, session);
                 } else {
                     throw new Error('占卜失敗');
@@ -752,16 +892,16 @@
             const interpretation = result.interpretation || '暫無解讀內容';
             const formattedInterpretation = marked.parse(interpretation);
 
-            // 上一個問題提示
-            const previousQuestionHtml = session.previousQuestion && session.previousQuestion !== result.question ? `
+            // 初始問題提示（如果不是第一次占卜）
+            const initialQuestionHtml = session.initialQuestion && session.initialQuestion !== result.question ? `
                 <div style="background: rgba(255, 189, 205, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #FFBDCD;">
-                    <strong style="color: #2d2d2d;">📋 上一個問題：</strong><br>
-                    <span style="color: #4a4a4a;">${session.previousQuestion}</span>
+                    <strong style="color: #2d2d2d;">📋 初始問題：</strong><br>
+                    <span style="color: #4a4a4a;">${session.initialQuestion}</span>
                 </div>
             ` : '';
 
             resultDetails.innerHTML = `
-                ${previousQuestionHtml}
+                ${initialQuestionHtml}
 
                 <div style="text-align: center; margin-bottom: 20px;">
                     <strong style="color: #2d3748;">問題:</strong> ${result.question}<br>
@@ -774,7 +914,6 @@
                 </div>
 
                 <div class="interpretation">
-                    <h4>🔮 塔羅牌解讀</h4>
                     <div>${formattedInterpretation}</div>
                 </div>
 
@@ -800,11 +939,11 @@
                 </div>
 
                 <!-- 繼續提問按鈕 -->
-                <div style="text-align: center; margin-top: 30px;">
-                    <button id="continueBtn" class="submit-btn" style="margin-right: 15px;">
+                <div class="action-buttons">
+                    <button id="continueBtn" class="submit-btn">
                         繼續提問
                     </button>
-                    <button id="newSessionBtn" class="submit-btn" style="background: #e0e0e0; color: #2d2d2d;">
+                    <button id="newSessionBtn" class="submit-btn btn-secondary">
                         開始新占卜
                     </button>
                 </div>
