@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@600&family=Noto+Serif+TC:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -16,6 +17,7 @@
 
         body {
             font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+            font-weight: 600;
             background-color: #FFF4EA;
             background-image: url('Gradient.png');
             background-size: cover;
@@ -110,6 +112,7 @@
             background: transparent;
             color: #2d2d2d;
             font-size: 1rem;
+            font-weight: 600;
         }
 
         .mode-option.active {
@@ -149,7 +152,7 @@
             text-align: center;
             background: transparent;
             font-size: 1.1rem;
-            font-weight: 500;
+            font-weight: 600;
             color: #2d2d2d;
         }
 
@@ -176,6 +179,7 @@
             resize: vertical;
             min-height: 150px;
             font-family: 'Noto Serif TC', serif;
+            font-weight: 600;
             color: #2d2d2d;
         }
 
@@ -198,7 +202,7 @@
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
-            font-weight: 500;
+            font-weight: 600;
             font-family: 'Noto Serif TC', serif;
             cursor: pointer;
             transition: all 0.3s;
@@ -266,6 +270,7 @@
         .loading p {
             color: #6d6d6d;
             font-family: 'Noto Serif TC', serif;
+            font-weight: 600;
         }
 
         /* 結果區域 */
@@ -342,13 +347,14 @@
             font-size: 0.95rem;
             color: #6d6d6d;
             margin-bottom: 15px;
-            font-weight: 400;
+            font-weight: 600;
         }
 
         .card-meaning {
             color: #4a4a4a;
             font-size: 0.9rem;
             line-height: 1.6;
+            font-weight: 600;
         }
 
         /* 解讀區域 */
@@ -357,15 +363,101 @@
             backdrop-filter: blur(10px);
             padding: 25px;
             border-radius: 12px;
-            margin: 25px 0;
-            line-height: 1.8;
+        }
+
+        /* Markdown 樣式支援 */
+        .interpretation h1,
+        .interpretation h2,
+        .interpretation h3 {
             color: #2d2d2d;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .interpretation h1:first-child,
+        .interpretation h2:first-child,
+        .interpretation h3:first-child {
+            margin-top: 0;
+        }
+
+        .interpretation h1 { font-size: 2rem; }
+        .interpretation h2 { font-size: 1.6rem; }
+        .interpretation h3 { font-size: 1.3rem; }
+
+        .interpretation p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .interpretation ul,
+        .interpretation ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        .interpretation ol {
+            list-style-type: decimal;
+        }
+
+        .interpretation ul {
+            list-style-type: disc;
+        }
+
+        .interpretation li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            padding-left: 5px;
+        }
+
+        .interpretation strong {
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .interpretation em {
+            font-style: italic;
+            color: #4a4a4a;
+        }
+
+        .interpretation blockquote {
+            border-left: 4px solid #FFBDCD;
+            padding-left: 20px;
+            margin: 15px 0;
+            color: #6d6d6d;
+            font-style: italic;
+        }
+
+        .interpretation code {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #2d2d2d;
+        }
+
+        .interpretation pre {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
         }
 
         .interpretation h4 {
             color: #2d2d2d;
             margin-bottom: 15px;
+            margin-top: 15px;
             font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .interpretation hr {
+            border: none;
+            border-top: 2px solid rgba(255, 189, 205, 0.5);
+            margin: 20px 0;
         }
 
         /* 詳細信息 */
@@ -493,6 +585,50 @@
     </div>
 
     <script>
+        // 配置 marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+        }
+
+        // === Session 管理 ===
+        const SESSION_KEY = 'tarot_session';
+
+        function createSession() {
+            return {
+                sessionId: generateUUID(),
+                createdAt: new Date().toISOString(),
+                currentQuestion: '',
+                drawnCardNames: [],
+                drawnCards: [],
+                interpretation: '',
+                totalDrawn: 0
+            };
+        }
+
+        function getSession() {
+            const stored = localStorage.getItem(SESSION_KEY);
+            return stored ? JSON.parse(stored) : null;
+        }
+
+        function saveSession(session) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        }
+
+        function clearSession() {
+            localStorage.removeItem(SESSION_KEY);
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         // API 配置 - Zeabur 部署的 API
         const API_URL = 'https://ellyli3160.zeabur.app/webhook/tarot-game';
         
@@ -527,10 +663,20 @@
             const mode = document.querySelector('.mode-option.active').dataset.mode;
             const cardCount = document.querySelector('.card-option.active')?.dataset.count;
 
-            // 準備請求數據
+            // 取得或建立 session
+            let session = getSession();
+            if (!session) {
+                session = createSession();
+            }
+
+            // 準備請求數據（新增 session 相關參數）
             const requestData = {
                 mode: mode,
-                question: question
+                question: question,
+                sessionId: session.sessionId,
+                previousCards: session.drawnCardNames,
+                previousQuestion: session.currentQuestion,
+                previousInterpretation: session.interpretation
             };
 
             if (mode === 'auto' && cardCount) {
@@ -552,7 +698,20 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    displayResult(data.result);
+                    // 更新 session
+                    const newCardNames = data.result.drawnCards.map(card => {
+                        // 移除「（正位）」「（逆位）」後綴
+                        return card.name.replace(/[（(](正位|逆位)[）)]/g, '').trim();
+                    });
+
+                    session.currentQuestion = question;
+                    session.drawnCards = data.result.drawnCards;
+                    session.drawnCardNames.push(...newCardNames);
+                    session.interpretation = data.result.interpretation;
+                    session.totalDrawn += data.result.cardCount;
+
+                    saveSession(session);
+                    displayResult(data.result, session);
                 } else {
                     throw new Error('占卜失敗');
                 }
@@ -572,10 +731,10 @@
             document.getElementById('loading').classList.remove('show');
         }
         
-        function displayResult(result) {
+        function displayResult(result, session) {
             const resultSection = document.getElementById('resultSection');
             const resultDetails = document.getElementById('resultDetails');
-            
+
             let cardsHtml = '';
             result.drawnCards.forEach((card, index) => {
                 const orientationClass = card.isReversed ? 'reversed' : 'upright';
@@ -588,27 +747,37 @@
                     </div>
                 `;
             });
-            
-            // 處理 AI 解讀文本，將其分段顯示
+
+            // 處理 AI 解讀文本，使用 Markdown 解析
             const interpretation = result.interpretation || '暫無解讀內容';
-            const formattedInterpretation = interpretation.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
+            const formattedInterpretation = marked.parse(interpretation);
+
+            // 上一個問題提示
+            const previousQuestionHtml = session.previousQuestion && session.previousQuestion !== result.question ? `
+                <div style="background: rgba(255, 189, 205, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #FFBDCD;">
+                    <strong style="color: #2d2d2d;">📋 上一個問題：</strong><br>
+                    <span style="color: #4a4a4a;">${session.previousQuestion}</span>
+                </div>
+            ` : '';
+
             resultDetails.innerHTML = `
+                ${previousQuestionHtml}
+
                 <div style="text-align: center; margin-bottom: 20px;">
                     <strong style="color: #2d3748;">問題:</strong> ${result.question}<br>
                     <strong style="color: #2d3748;">模式:</strong> ${result.mode === 'auto' ? '自選抽牌' : 'AI智能建議'}<br>
                     <strong style="color: #2d3748;">抽牌數:</strong> ${result.cardCount}張
                 </div>
-                
+
                 <div class="cards-display">
                     ${cardsHtml}
                 </div>
-                
+
                 <div class="interpretation">
                     <h4>🔮 塔羅牌解讀</h4>
                     <div>${formattedInterpretation}</div>
                 </div>
-                
+
                 <div class="result-meta">
                     <div class="meta-item">
                         <div class="meta-label">占卜時間</div>
@@ -624,11 +793,42 @@
                         <div class="meta-value">正位 ${result.summary.upright}張 / 逆位 ${result.summary.reversed}張</div>
                     </div>
                     ` : ''}
+                    <div class="meta-item">
+                        <div class="meta-label">累計抽牌</div>
+                        <div class="meta-value">${session.totalDrawn} / 78 張</div>
+                    </div>
+                </div>
+
+                <!-- 繼續提問按鈕 -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button id="continueBtn" class="submit-btn" style="margin-right: 15px;">
+                        繼續提問
+                    </button>
+                    <button id="newSessionBtn" class="submit-btn" style="background: #e0e0e0; color: #2d2d2d;">
+                        開始新占卜
+                    </button>
                 </div>
             `;
 
             // 顯示結果
             resultSection.classList.add('show');
+
+            // 按鈕事件監聽
+            document.getElementById('continueBtn').addEventListener('click', () => {
+                // 清空問題輸入框
+                document.getElementById('question').value = '';
+                // 捲動到表單
+                document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+                // 聚焦輸入框
+                document.getElementById('question').focus();
+            });
+
+            document.getElementById('newSessionBtn').addEventListener('click', () => {
+                if (confirm('確定要開始新的占卜嗎？這將清除目前的記錄。')) {
+                    clearSession();
+                    location.reload();
+                }
+            });
         }
         
         function displayError(message) {
