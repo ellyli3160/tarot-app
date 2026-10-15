@@ -698,7 +698,7 @@
             <div class="input-section">
                 <div class="last-question" id="lastQuestion">
                     <span class="last-question-text">上次提問：<span id="lastQuestionText">無</span></span>
-                    <button type="button" id="restartBtn" class="submit-btn" hidden>重新提問</button>
+                    <button type="button" id="restartBtn" class="submit-btn" hidden>開始新占卜</button>
                 </div>
                 <form id="tarotForm">
                     <div class="form-group">
@@ -1033,7 +1033,7 @@
                 textEl.textContent = firstQuestion;
                 restartBtn.hidden = false;
                 restartBtn.addEventListener('click', () => {
-                    if (!confirm('確定要重新提問嗎？這將清除目前的占卜記錄。')) return;
+                    if (!confirm('確定要開始新占卜嗎？這將清除目前的占卜記錄。')) return;
                     clearSession();
                     location.reload();
                 });
