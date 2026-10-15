@@ -514,6 +514,34 @@
             margin: 0;
         }
 
+        .last-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .last-question-text {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .last-question .submit-btn[hidden] {
+            display: none;
+        }
+
+        .last-question .submit-btn {
+            flex-shrink: 0;
+            width: auto;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+        }
+
         .btn-secondary {
             background: #e0e0e0 !important;
             color: #2d2d2d !important;
@@ -668,6 +696,10 @@
         <div class="main-content">
             <!-- 輸入區域 -->
             <div class="input-section">
+                <div class="last-question" id="lastQuestion">
+                    <span class="last-question-text">上次提問：<span id="lastQuestionText">無</span></span>
+                    <button type="button" id="restartBtn" class="submit-btn" hidden>重新提問</button>
+                </div>
                 <form id="tarotForm">
                     <div class="form-group">
                         <div class="mode-selection">
@@ -740,8 +772,12 @@
         }
 
         function getSession() {
-            const stored = localStorage.getItem(SESSION_KEY);
-            return stored ? JSON.parse(stored) : null;
+            try {
+                const stored = localStorage.getItem(SESSION_KEY);
+                return stored ? JSON.parse(stored) : null;
+            } catch (e) {
+                return null;
+            }
         }
 
         function saveSession(session) {
@@ -987,7 +1023,24 @@
         
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 頁面載入完成
+            const textEl = document.getElementById('lastQuestionText');
+            const restartBtn = document.getElementById('restartBtn');
+            const session = getSession();
+            const firstQuestion = session && typeof session.initialQuestion === 'string'
+                ? session.initialQuestion.trim() : '';
+
+            if (firstQuestion) {
+                textEl.textContent = firstQuestion;
+                restartBtn.hidden = false;
+                restartBtn.addEventListener('click', () => {
+                    if (!confirm('確定要重新提問嗎？這將清除目前的占卜記錄。')) return;
+                    clearSession();
+                    location.reload();
+                });
+            } else {
+                textEl.textContent = '無';
+                restartBtn.hidden = true;
+            }
         });
     </script>
 </body>
